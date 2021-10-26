@@ -7,6 +7,7 @@ import Navbar from './components/Navbar'
 import Links from './components/Links'
 import Search from './components/Search'
 import Movies from './components/Movies'
+import MovieDetails from './components/MovieDetails'
 import fetchApi from './components/helpers/fetchApi'
 
 const App = () => {
@@ -46,6 +47,22 @@ const App = () => {
 	};
 
     /**
+     * Fetch single movie details
+     * 
+     * @param {Object} movie     movie object
+     */
+    const fetchMovieDetails = async (movie) => {
+        if (movieDetails && movieDetails.id !== movie.id) {
+            const apiRequest = `/movie/${movie.id}?&api_key=`;
+            const url = `${process.env.REACT_APP_API_BASE_URL}${apiRequest}${process.env.REACT_APP_API_KEY}&language=${process.env.REACT_APP_API_LOCALE}&append_to_response=videos,images,credits`;
+
+            await fetch(url)
+                .then(res => res.json())
+                .then(data => setMovieDetails(data))
+        }
+    }
+
+    /**
      * Add/remove movie to/from favorites/queued lists
      * 
      * @param {Object} movie    movie object
@@ -80,6 +97,7 @@ const App = () => {
     return (
         <Router>
             <Navbar title="Filmer" links={Links} searchBar={Search} setSearchStr={setSearchStr}/>
+            <MovieDetails movieDetails={movieDetails} />
             <div className="container-xl">
                 <Switch>
                     <Route exact path="/">
@@ -87,18 +105,21 @@ const App = () => {
                         title={searchStr ? `Sök resultat för: ${searchStr}` : 'Högst rankade'}
                         handleAddToList={addMovieToList}
                         movies={movies}
+                        handleFetchDetails={fetchMovieDetails} />
                     </Route>
                     <Route path="/favorites">
                         <Movies 
                         title={'Mina favoriter'}
                         handleAddToList={addMovieToList}
                         movies={favMovies} 
+                        handleFetchDetails={fetchMovieDetails} />
                     </Route>
                     <Route path="/queue">
                         <Movies 
                         title={'Titta senare'}
                         handleAddToList={addMovieToList}
                         movies={queuedMovies} 
+                        handleFetchDetails={fetchMovieDetails} />
                     </Route>
                 </Switch>
             </div>

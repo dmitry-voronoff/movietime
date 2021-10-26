@@ -43,6 +43,7 @@ const Movies = (props) => {
                     <img src={`http://image.tmdb.org/t/p/${imageSize}${movie.poster_path}`} alt="Movie poster" className="card-img border-0 rounded-0"/>
                     <div className="card-img-overlay movie--poster border-0 rounded-0">
                         <h5>{movie.title}</h5>
+                        <div className="card-img-overlay" onClick={ () => props.handleFetchDetails(movie) }/>
                         <div className="btn-group" role="group" aria-label="Add to list">
                             <button type="button" className="btn text-warning" onClick={() => props.handleAddToList(movie, process.env.REACT_APP_FAVORITES)}>
                                 <FavIcon isActive={isInList(movie, process.env.REACT_APP_FAVORITES)} />
